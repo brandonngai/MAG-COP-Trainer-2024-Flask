@@ -10,7 +10,7 @@ import json
 app = Flask(__name__)
 
 currentDir = os.getcwd()
-imgDir = os.path.join(currentDir, "Static\\Images")
+imgDir = os.path.join(currentDir, "static/images")
 imageList = os.listdir(imgDir)
 imageList.remove('welcome.png')
 
