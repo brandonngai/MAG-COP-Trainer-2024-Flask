@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAG COP Trainer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h4 {
+            margin: 0;
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+            padding: 0px;
+            padding-top: 5px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h6 {
+            margin: 0;
+            font-size: 12px;
+            padding-bottom: 5px;
+            color: #777;
+            background-color: #e9ecef; /* Match the h4 background */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #image-container {
+            margin-bottom: 30px;
+        }
+
+        #skill-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 400px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .event-button, .value-button {
+            border: none;
+            padding: 12px 24px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+        }
+
+        .event-button {
+            background-color: #11d99b; /* Active color */
+            color: white;
+        }
+
+        .event-button.inactive {
+            background-color: grey; /* Inactive color */
+        }
+
+        .value-button {
+            transition: background-color 0.3s ease;
+        }
+
+        .value-button.correct {
+            background-color: #11d99b; /* Green */
+            color: white;
+        }
+
+        .value-button.incorrect {
+            background-color: #ef5350; /* Red */
+            color: white;
+        }
+
+        /* Adjust button size and spacing */
+        .event-button {
+            width: 80px;
+        }
+
+        .value-button {
+            width: 60px;
+        }
+
+        #next-button {
+            width: 100%; /* Full width */
+            padding: 12px 0; /* Adjust padding for better touch area */
+            font-size: 20px; /* Slightly larger font */
+            margin-top: 10px; /* Space above the button */
+            background-color: #007bff; /* Bootstrap primary color */
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #next-button:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+        }
+
+        .content-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        #image-container {
+            margin: 0 auto; /* Center the container */
+            margin-bottom: 30px;
+            height: 30vh; /* Max height of 30% of the viewport height */
+            max-height: 420px; /* Cap height at 420 pixels */
+            text-align: center; /* Center the image */
+        }
+
+        /* Statistics Section */
+        #tracker {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px; /* Added margin */
+        }
+
+        #tracker h5 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        #tracker p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        #tracker span {
+            font-weight: bold;
+        }
+        
+        #header {
+            background-color: #e9ecef;
+            border-radius: 5px 5px 0 0; /* Rounded corners only at the top */
+            width: calc(100%); /* Extend beyond the container's width */
+            position: relative; /* Ensure positioning context */
+            z-index: 1; /* Layer above the container */
+        }
+
+        #skill-image {
+            max-width: 100%;
+            height: auto; /* Maintain aspect ratio */
+            max-height: 400px; /* Cap height at 400 pixels */
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            display: block; /* Ensure it's treated as a block element */
+            margin: 0 auto; /* Center the image itself */
+        }
+
+        
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .event-button, .value-button {
+                width: 50px;
+                padding: 10px 16px;
+            }
+
+            #image-container {
+                margin-bottom: 20px; /* Add margin below the image */
+            }
+
+            #skill-image {
+                max-height: 30vh; /* Ensure the image height is 30% of viewport */
+                height: auto; /* Maintain aspect ratio */
+                max-width: 100%; /* Prevent overflow */
+                object-fit: contain; /* Ensure the entire image is visible */
+            }
+
+            #next-button {
+                font-size: 16px; /* Slightly smaller font for mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="header">
+            <h4 style="margin: 0;">MAG COP Trainer 2024</h4>
+            <h6 style="margin: 0; color: #777;">By Brandon Ngai</h6>
+        </div>
+
+    <!-- Filter Buttons -->
+    <div class="button-container">
+        <button class="event-button" id="FX">FX</button>
+        <button class="event-button" id="PH">PH</button>
+        <button class="event-button" id="SR">SR</button>
+        <button class="event-button" id="PB">PB</button>
+        <button class="event-button" id="HB">HB</button>
+    </div>
+
+    <div class="content-wrapper">
+        <!-- Image Section -->
+        <div id="image-container">
+            <img id="skill-image" src="" alt="Skill Image">
+        </div>
+    </div>
+
+
+
+    <!-- Value Buttons -->
+    <div class="button-container">
+        <button class="value-button" id="A">A</button>
+        <button class="value-button" id="B">B</button>
+        <button class="value-button" id="C">C</button>
+        <button class="value-button" id="D">D</button>
+        <button class="value-button" id="E">E</button>
+        <button class="value-button" id="F">F</button>
+        <button class="value-button" id="G">G</button>
+        <button class="value-button" id="H">H</button>
+        <button class="value-button" id="I">I</button>
+        <button class="value-button" id="J">J</button>
+    </div>
+
+    <button id="next-button">Next Skill</button>
+
+    <!-- Statistics Section moved below Next Skill button -->
+    <div id="tracker">
+        <h5>Statistics</h5>
+        <p>Attempts: <span id="attempts">0</span></p>
+        <p>Correct: <span id="correct">0</span></p>
+        <p>Accuracy: <span id="accuracy">0%</span></p>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let currentSolution = null;
+        const eventButtons = Array.from(document.querySelectorAll('.event-button'));
+        let stats = {
+            attempts: 0,
+            correct: 0
+        };
+
+        let welcomeImageFlag = 1;
+    
+        function updateImage() {
+            console.log("Updating image...");
+            const eventFilterState = eventButtons.map(btn => btn.classList.contains('inactive') ? 'btn-secondary' : 'btn-success');
+            console.log("Event filter state:", eventFilterState);
+        
+            fetch('/get_image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    attempts: stats.attempts,
+                    event_filter: eventFilterState,
+                    welcome_image_flag: welcomeImageFlag
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Received data:", data);
+                document.getElementById('skill-image').src = data.image;
+                currentSolution = data.solution;
+                console.log("Updated image and solution");
+                resetValueButtons();
+            })
+            .catch(error => {
+                console.error("Error updating image:", error);
+            });
+        }
+        
+        function toggleValueButtons(shouldLock) {
+            document.querySelectorAll('.value-button').forEach(button => {
+                button.disabled = shouldLock; // Disable or enable the button
+                button.classList.toggle('locked', shouldLock); // Optional: add a class to style locked buttons
+            });
+        }
+    
+        function resetValueButtons() {
+            document.querySelectorAll('.value-button').forEach(btn => {
+                btn.classList.remove('correct', 'incorrect');
+            });
+        }
+    
+        function updateStats(isCorrect) {
+            stats.attempts++;
+            if (isCorrect) {
+                stats.correct++;
+            }
+            document.getElementById('attempts').textContent = stats.attempts;
+            document.getElementById('correct').textContent = stats.correct;
+            document.getElementById('accuracy').textContent = 
+                ((stats.correct / stats.attempts) * 100).toFixed(1) + '%';
+        }
+
+
+    
+        // Load initial image
+        let userGuess = -1;
+        updateImage();
+        toggleValueButtons(true);
+
+    
+        // Handle event button clicks
+        eventButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                console.log("Event button clicked:", button.id);
+                button.classList.toggle('inactive');
+            });
+        });
+    
+        document.querySelectorAll('.value-button').forEach(button => {
+            button.addEventListener('click', function() {
+                console.log("Value button clicked:", button.id);
+        
+                // Skip checking solution for the welcome image
+                if (currentSolution === null) {
+                    console.log("Skipping solution check for welcome image.");
+                    return; // Exit the function if it's the welcome image
+                }
+        
+                userGuess = button.id.charCodeAt(0) - 65; // A = 0, B = 1, etc.
+                
+                const isCorrect = userGuess === currentSolution;
+                updateStats(isCorrect);
+                
+                if (isCorrect) {
+                    resetValueButtons();
+                    button.classList.add('correct');
+                } else {
+                    button.classList.add('incorrect');
+                    const correctButton = document.querySelector(`.value-button:nth-child(${currentSolution + 1})`);
+                    correctButton.classList.add('correct');
+                }
+                toggleValueButtons(true);
+            });
+        });
+        
+    
+        // Handle Next Skill button
+        document.getElementById('next-button').addEventListener('click', function() {
+            console.log("welcomeImageFlag", welcomeImageFlag);
+            console.log("Next Skill button clicked");
+            console.log("User Guess: ", userGuess);
+            // If a user clicks "Next Skill" without guessing, it counts as a wrong answer
+            if (userGuess === -1) {
+                if (welcomeImageFlag === 0) {
+                    console.log("Empty Guess");
+                    updateStats(false);
+                }
+            }
+            welcomeImageFlag = 0;
+            updateImage(); // This will now work regardless of welcome image state
+            userGuess = -1;
+            toggleValueButtons(false); // Unlock buttons after the welcome image
+        });
+    });
+    
+    
+</script>
+
+</body>
+</html>
