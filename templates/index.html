@@ -65,10 +65,10 @@
             margin-bottom: 20px;
         }
 
-        .event-button, .value-button {
+        .event-button, .eg-button, .value-button, .value-filter-button {
             border: none;
             padding: 12px 24px;
-            margin: 10px;
+            margin: 5px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 18px;
@@ -81,15 +81,29 @@
 
         .event-button {
             background-color: #11d99b; /* Active color */
+            width: 80px;
             color: white;
         }
 
-        .event-button.inactive {
+        .eg-button {
+            background-color: #11d99b; /* Active color */
+            width: 80px;
+            color: white;
+        }
+
+        .value-filter-button {
+            background-color: #11d99b; /* Active color */
+            width: 60px;
+            color: white;
+        }
+
+        .event-button.inactive, .eg-button.inactive, .value-filter-button.inactive {
             background-color: grey; /* Inactive color */
         }
 
         .value-button {
             transition: background-color 0.3s ease;
+            width: 60px;
         }
 
         .value-button.correct {
@@ -100,15 +114,6 @@
         .value-button.incorrect {
             background-color: #ef5350; /* Red */
             color: white;
-        }
-
-        /* Adjust button size and spacing */
-        .event-button {
-            width: 80px;
-        }
-
-        .value-button {
-            width: 60px;
         }
 
         #next-button {
@@ -143,6 +148,7 @@
             max-height: 420px; /* Cap height at 420 pixels */
             text-align: center; /* Center the image */
         }
+        
 
         /* Statistics Section */
         #tracker {
@@ -170,7 +176,7 @@
         
         #header {
             background-color: #e9ecef;
-            border-radius: 5px 5px 0 0; /* Rounded corners only at the top */
+            border-radius: 0 0 0 0; /* Rounded corners only at the top */
             width: calc(100%); /* Extend beyond the container's width */
             position: relative; /* Ensure positioning context */
             z-index: 1; /* Layer above the container */
@@ -186,12 +192,85 @@
             margin: 0 auto; /* Center the image itself */
         }
 
+        /* Dropdown Shelves */
+        .dropdown {
+            display: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 0px;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+            background-color: #f9f9f9; /* Light background for dropdown */
+            border-radius: 0 0 5 5; /* Rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slight shadow */
+        }
+
+        .dropdown.show {
+            display: flex;
+        }
+
+        .dropdown-divider {
+            width: 100%;
+            border-top: 1px solid #ccc;
+            margin: 2px 0;
+        }
+
+        /* Make shelves flex containers with horizontal layout */
+        .shelf {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Allow buttons to wrap */
+        }
+
+        /* Styles for buttons in dropdown */
+        .event-button, .eg-button, .value-filter-button {
+            border: none;
+            padding: 8px 12px; /* Reduced padding */
+            margin: 5px; /* Reduced margin */
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px; /* Slightly smaller font */
+            transition: background-color 0.3s;
+        }
+
+        .event-button:hover, .eg-button:hover, .value-filter-button:hover {
+            background-color: #11b888; /* Slightly darker shade on hover */
+        }
+
+        /* Styles for the Show Filters button */
+        #toggle-dropdown {
+            background-color: #f9f9f9; /* Same color as the dropdown shelves */
+            font-family: 'Roboto', sans-serif; 
+            font-weight: bold;
+            font-size: 12px; /* Slightly larger font for visibility */
+            color: #333; /* Change text color for contrast */
+            border: none;
+            padding: 12px; /* Increased padding for a better appearance */
+            cursor: pointer;
+            margin-bottom: 0px;
+            width: 100%; /* Stretch button across dropdown */
+            transition: background-color 0.3s ease;
+            text-align: center; /* Center text */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Slight shadow */
+        }
+        
+        #toggle-dropdown:hover {
+            background-color: #e0e0e0; /* Darker blue on hover */
+        }
+
         
         /* Responsive design for smaller screens */
         @media (max-width: 768px) {
-            .event-button, .value-button {
-                width: 50px;
-                padding: 10px 16px;
+            .event-button, .eg-button, .value-filter-button {
+                width: 60px;
+                margin: 5px;
+                padding: 8px 16px;
+            }
+
+            .value-button {
+                width: 60px;
+                margin: 5px;
+                padding: 8px 16px;
             }
 
             #image-container {
@@ -219,14 +298,49 @@
             <h6 style="margin: 0; color: #777;">By Brandon Ngai</h6>
         </div>
 
-    <!-- Filter Buttons -->
-    <div class="button-container">
-        <button class="event-button" id="FX">FX</button>
-        <button class="event-button" id="PH">PH</button>
-        <button class="event-button" id="SR">SR</button>
-        <button class="event-button" id="PB">PB</button>
-        <button class="event-button" id="HB">HB</button>
+    <!-- Toggle Dropdown Button -->
+    <button id="toggle-dropdown">Show Filters</button>
+
+    <!-- Dropdown Shelf for Event Buttons -->
+    <div id="dropdown-shelf" class="dropdown">
+        <div class="shelf">
+            <button class="event-button" id="FX">FX</button>
+            <button class="event-button" id="PH">PH</button>
+            <button class="event-button" id="SR">SR</button>
+            <button class="event-button" id="PB">PB</button>
+            <button class="event-button" id="HB">HB</button>
+        </div>
+
+        <!-- Divider -->
+        <div class="dropdown-divider"></div>
+
+        <!-- Second shelf with event buttons -->
+        <div class="shelf">
+            <button class="eg-button" id="EG-1">EG1</button>
+            <button class="eg-button" id="EG-2">EG2</button>
+            <button class="eg-button" id="EG-3">EG3</button>
+            <button class="eg-button" id="EG-4">EG4</button>
+        </div>
+
+        <!-- Divider -->
+        <div class="dropdown-divider"></div>
+
+        <!-- Third shelf with event buttons -->
+        <div class="shelf">
+            <button class="value-filter-button" id="A-Filter">A</button>
+            <button class="value-filter-button" id="B-Filter">B</button>
+            <button class="value-filter-button" id="C-Filter">C</button>
+            <button class="value-filter-button" id="D-Filter">D</button>
+            <button class="value-filter-button" id="E-Filter">E</button>
+            <button class="value-filter-button" id="F-Filter">F</button>
+            <button class="value-filter-button" id="G-Filter">G</button>
+            <button class="value-filter-button" id="H-Filter">H</button>
+            <button class="value-filter-button" id="I-Filter">I</button>
+            <button class="value-filter-button" id="J-Filter">J</button>
+
+        </div>
     </div>
+
 
     <div class="content-wrapper">
         <!-- Image Section -->
@@ -234,7 +348,6 @@
             <img id="skill-image" src="" alt="Skill Image">
         </div>
     </div>
-
 
 
     <!-- Value Buttons -->
@@ -264,8 +377,18 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
+        // Flag touch devices
+        const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints;
+        if (isTouchDevice) {
+            document.body.classList.add('touch-device');
+        }
+
+
         let currentSolution = null;
         const eventButtons = Array.from(document.querySelectorAll('.event-button'));
+        const egButtons = Array.from(document.querySelectorAll('.eg-button'));
+        const valueFilterButtons = Array.from(document.querySelectorAll('.value-filter-button'));
+
         let stats = {
             attempts: 0,
             correct: 0
@@ -276,6 +399,8 @@
         function updateImage() {
             console.log("Updating image...");
             const eventFilterState = eventButtons.map(btn => btn.classList.contains('inactive') ? 'btn-secondary' : 'btn-success');
+            const egFilterState = egButtons.map(btn => btn.classList.contains('inactive') ? 'btn-secondary' : 'btn-success');
+            const valueFilterState = valueFilterButtons.map(btn => btn.classList.contains('inactive') ? 'btn-secondary' : 'btn-success');
             console.log("Event filter state:", eventFilterState);
         
             fetch('/get_image', {
@@ -284,6 +409,8 @@
                 body: JSON.stringify({
                     attempts: stats.attempts,
                     event_filter: eventFilterState,
+                    eg_filter: egFilterState,
+                    value_filter: valueFilterState,
                     welcome_image_flag: welcomeImageFlag
                 })
             })
@@ -323,8 +450,6 @@
             document.getElementById('accuracy').textContent = 
                 ((stats.correct / stats.attempts) * 100).toFixed(1) + '%';
         }
-
-
     
         // Load initial image
         let userGuess = -1;
@@ -332,6 +457,7 @@
         toggleValueButtons(true);
 
     
+
         // Handle event button clicks
         eventButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -340,6 +466,23 @@
             });
         });
     
+        // Handle EG button clicks
+        egButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                console.log("Event button clicked:", button.id);
+                button.classList.toggle('inactive');
+            });
+        });
+    
+        // Handle value filter button clicks
+        valueFilterButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                console.log("Event button clicked:", button.id);
+                button.classList.toggle('inactive');
+            });
+        });
+    
+
         document.querySelectorAll('.value-button').forEach(button => {
             button.addEventListener('click', function() {
                 console.log("Value button clicked:", button.id);
@@ -367,6 +510,15 @@
             });
         });
         
+        // Dropdown Toggle
+        const toggleDropdown = document.getElementById('toggle-dropdown');
+        const dropdownShelf = document.getElementById('dropdown-shelf');
+
+        toggleDropdown.addEventListener('click', function() {
+            dropdownShelf.classList.toggle('show');
+            toggleDropdown.innerText = dropdownShelf.classList.contains('show') ? 'Hide Filters' : 'Show Filters';
+        });
+
     
         // Handle Next Skill button
         document.getElementById('next-button').addEventListener('click', function() {
@@ -385,6 +537,33 @@
             userGuess = -1;
             toggleValueButtons(false); // Unlock buttons after the welcome image
         });
+
+        // DELETE
+        function hasTouch() {
+            return 'ontouchstart' in document.documentElement
+                   || navigator.maxTouchPoints > 0
+                   || navigator.msMaxTouchPoints > 0;
+          }
+          
+          if (hasTouch()) { // remove all the :hover stylesheets
+            try { // prevent exception on browsers not supporting DOM styleSheets properly
+              for (var si in document.styleSheets) {
+                var styleSheet = document.styleSheets[si];
+                if (!styleSheet.rules) continue;
+          
+                for (var ri = styleSheet.rules.length - 1; ri >= 0; ri--) {
+                  if (!styleSheet.rules[ri].selectorText) continue;
+          
+                  if (styleSheet.rules[ri].selectorText.match(':hover')) {
+                    styleSheet.deleteRule(ri);
+                  }
+                }
+              }
+            } catch (ex) {}
+          }
+
+
+
     });
     
     

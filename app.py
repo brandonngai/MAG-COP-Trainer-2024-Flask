@@ -11,8 +11,9 @@ app = Flask(__name__)
 
 currentDir = os.getcwd()
 imgDir = os.path.join(currentDir, "static/images")
-imageList = os.listdir(imgDir)
-imageList.remove('welcome.png')
+skillImgDir = os.path.join(currentDir, "static/images/skill images")
+
+imageList = os.listdir(skillImgDir)
 
 # Create Solution Dataframe
 event_list = []
@@ -63,21 +64,27 @@ def get_image():
         event_filter = list(compress(["FX", "PH", "SR", "PB", "HB"], event_filter_state))
         app.logger.info(f"Event filter: {event_filter}")
 
-        # If event_filter is empty, select all events
-        if not event_filter:
-            app.logger.info("No events selected, using all events")
-            filtered_data = full_data  # No filter applied
-        else:
-            # Otherwise filter based on the active events
-            app.logger.info("Filtering data based on selected events")
-            filtered_data = full_data[full_data["Event"].isin(event_filter)].reset_index(drop=True)
+        # Filter EGs based on the selected buttons
+        eg_filter_state = [x == "btn-success" for x in data['eg_filter']]
+        eg_filter = list(compress(["1", "2", "3", "4"], eg_filter_state))
+        app.logger.info(f"EG filter: {eg_filter}")
 
-        app.logger.info(f"Filtered data shape: {filtered_data.shape}")
+        # Filter EGs based on the selected buttons
+        value_filter_state = [x == "btn-success" for x in data['value_filter']]
+        value_filter = list(compress(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"], value_filter_state))
+        app.logger.info(f"EG filter: {value_filter}")
+
+        ####
+        # Apply all filters to data set
+        app.logger.info("Filtering data based on selected events")
+        filtered_data = full_data[(full_data["Event"].isin(event_filter)) & (full_data["EG"].isin(eg_filter)) & (full_data["Value"].isin(value_filter))].reset_index(drop=True)
 
         if filtered_data.empty:
-            app.logger.info("No skills found for the selected events")
+            app.logger.info("No skills found for the selected filters")
             # If no data matches the filters, return a message
-            return jsonify({'image': '', 'message': 'No skills found for the selected events', 'solution': None})
+            with open(os.path.join(imgDir, "none.png"), 'rb') as f:
+                encoded_image = base64.b64encode(f.read()).decode()
+            return jsonify({'image': f"data:image/png;base64,{encoded_image}", 'solution': None})
 
         # If there is data, select a random image
         i = random.randrange(0, filtered_data.shape[0])
@@ -85,7 +92,7 @@ def get_image():
         solution = filtered_data['Value'][i]
         app.logger.info(f"Selected image: {img_file}, Solution: {solution}")
 
-        with open(os.path.join(imgDir, img_file), 'rb') as f:
+        with open(os.path.join(skillImgDir, img_file), 'rb') as f:
             encoded_image = base64.b64encode(f.read()).decode()
 
         # Map skill value to index (A-J -> 0-9)
