@@ -364,7 +364,7 @@
         <button class="value-button" id="J">J</button>
     </div>
 
-    <button id="next-button">Next Skill</button>
+    <button id="next-button">Click to Start</button>
 
     <!-- Statistics Section moved below Next Skill button -->
     <div id="tracker">
@@ -536,9 +536,9 @@
             updateImage(); // This will now work regardless of welcome image state
             userGuess = -1;
             toggleValueButtons(false); // Unlock buttons after the welcome image
+            document.getElementById('next-button').innerText = "Next Skill"; // Change to "Next Skill" after the first attempt
         });
 
-        // DELETE
         function hasTouch() {
             return 'ontouchstart' in document.documentElement
                    || navigator.maxTouchPoints > 0
